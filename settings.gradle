@@ -1,1 +1,5 @@
 rootProject.name = 'inflearn-big-system-design'
+
+include 'common'
+include 'service'
+include 'service:article', "service:article-read", "service:comment", "service:hot-article", "service:like", "service:view"

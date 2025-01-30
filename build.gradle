@@ -7,6 +7,9 @@ plugins {
 group = 'kr.co.won'
 version = '0.0.1-SNAPSHOT'
 
+/** root project는 실행 하는 모듈이 아니기 때문이다. */
+bootJar.enabled = false
+
 /** multi project 구성 할 때 모든 project 에 대한 설정 */
 allprojects {
 

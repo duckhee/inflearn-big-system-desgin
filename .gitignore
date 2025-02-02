@@ -39,3 +39,6 @@ out/
 
 ### jenv file ###
 .java-version
+
+### enviromnent file ###
+infra/.env

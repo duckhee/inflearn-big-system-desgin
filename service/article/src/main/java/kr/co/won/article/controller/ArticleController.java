@@ -1,0 +1,36 @@
+package kr.co.won.article.controller;
+
+import kr.co.won.article.service.ArticleService;
+import kr.co.won.article.service.request.ArticleCreateRequest;
+import kr.co.won.article.service.request.ArticleUpdateRequest;
+import kr.co.won.article.service.response.ArticleResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(path = "/api/articles")
+@RequiredArgsConstructor
+public class ArticleController {
+
+    private final ArticleService articleService;
+
+    @GetMapping(path = "/{articleId}")
+    public ArticleResponse readArticleResponse(@PathVariable Long articleId) {
+        return articleService.findArticle(articleId);
+    }
+
+    @PostMapping
+    public ArticleResponse createArticleResponse(@RequestBody ArticleCreateRequest request) {
+        return articleService.createArticle(request);
+    }
+
+    @PutMapping(path = "/{articleId}")
+    public ArticleResponse updateArticleResponse(@PathVariable Long articleId, @RequestBody ArticleUpdateRequest request) {
+        return articleService.updateArticle(articleId, request);
+    }
+
+    @DeleteMapping(path = "/{articleId}")
+    public void deleteArticleResponse(@PathVariable Long articleId) {
+        articleService.deleteArticle(articleId);
+    }
+}

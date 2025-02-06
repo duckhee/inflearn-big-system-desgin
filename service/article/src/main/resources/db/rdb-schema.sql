@@ -6,5 +6,5 @@ CREATE TABLE tbl_article
     board_id    BIGINT        NOT NULL COMMENT "Board ID",
     writer_id   BIGINT        NOT NULL COMMENT "writer ID",
     created_at  DATETIME      NOT NULL DEFAULT NOW() COMMENT "article create time",
-    modified_at DATETIME      NOT NULL DEFAULT NULL COMMENT "article modified time"
-)
+    modified_at DATETIME      NOT NULL COMMENT "article modified time"
+);

@@ -8,3 +8,6 @@ CREATE TABLE tbl_article
     created_at  DATETIME      NOT NULL DEFAULT NOW() COMMENT "article create time",
     modified_at DATETIME      NOT NULL COMMENT "article modified time"
 );
+
+/*날짜에 대한 Index 를 생성하는 Query */
+# CREATE INDEX idx_board_id_article_id ON tbl_article (board_id ASC, article_id DESC);

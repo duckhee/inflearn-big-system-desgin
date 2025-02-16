@@ -3,6 +3,7 @@ package kr.co.won.article.controller;
 import kr.co.won.article.service.ArticleService;
 import kr.co.won.article.service.request.ArticleCreateRequest;
 import kr.co.won.article.service.request.ArticleUpdateRequest;
+import kr.co.won.article.service.response.ArticlePageResponse;
 import kr.co.won.article.service.response.ArticleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class ArticleController {
 
     private final ArticleService articleService;
+
+    @GetMapping
+    public ArticlePageResponse pagingArticleResponse(@RequestParam("boardId") Long boardId, @RequestParam("page") Long pageNumber, @RequestParam("size") Long pageSize) {
+        return articleService.pageArticle(boardId, pageNumber, pageSize);
+    }
 
     @GetMapping(path = "/{articleId}")
     public ArticleResponse readArticleResponse(@PathVariable Long articleId) {

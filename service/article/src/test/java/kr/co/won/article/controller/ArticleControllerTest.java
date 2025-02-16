@@ -1,6 +1,7 @@
 package kr.co.won.article.controller;
 
 import kr.co.won.article.service.request.ArticleUpdateRequest;
+import kr.co.won.article.service.response.ArticlePageResponse;
 import kr.co.won.article.service.response.ArticleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,8 @@ import lombok.ToString;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClient;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -87,6 +90,24 @@ class ArticleControllerTest {
                 .uri("/api/articles/{articleId}", articleId)
                 .retrieve()
                 .body(Void.class);
+    }
+
+    @DisplayName(value = "05. paging article Tests")
+    @Test
+    void pagingTests() {
+        Long boardId = 1l;
+        Long pageNumber = 2l;
+        Long pageSize = 10l;
+        ArticlePageResponse response = restClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/api/articles")
+                        .queryParam("boardId", boardId)
+                        .queryParam("page", pageNumber)
+                        .queryParam("size", pageSize)
+                        .build())
+                .retrieve()
+                .body(ArticlePageResponse.class);
+
+
     }
 
     @Getter

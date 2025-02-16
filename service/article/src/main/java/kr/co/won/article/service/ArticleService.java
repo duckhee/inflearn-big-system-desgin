@@ -4,11 +4,16 @@ import kr.co.won.article.entity.ArticleEntity;
 import kr.co.won.article.repository.ArticleRepository;
 import kr.co.won.article.service.request.ArticleCreateRequest;
 import kr.co.won.article.service.request.ArticleUpdateRequest;
+import kr.co.won.article.service.response.ArticlePageResponse;
 import kr.co.won.article.service.response.ArticleResponse;
+import kr.co.won.article.service.utils.paging.PageLimitCalculator;
 import kr.co.won.common.snowflake.Snowflake;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +51,15 @@ public class ArticleService {
     public ArticleResponse findArticle(Long articleId) {
         ArticleEntity findArticle = articleRepository.findById(articleId).orElseThrow();
         return ArticleResponse.fromEntity(findArticle);
+    }
+
+    public ArticlePageResponse pageArticle(Long boardId, Long pageNumber, Long pageSize) {
+        Long pageLimitCount = PageLimitCalculator.calculatePageLimit(pageNumber, pageSize, 10L);
+        Long countPage = articleRepository.countPage(boardId, pageLimitCount);
+        long pageOffset = (pageNumber - 1) * pageSize;
+        List<ArticleResponse> pageArticleResponse = articleRepository.pagingQuery(boardId, pageOffset, pageSize).stream()
+                .map(ArticleResponse::fromEntity).toList();
+        return ArticlePageResponse.of(pageArticleResponse, countPage);
     }
 
     @Transactional

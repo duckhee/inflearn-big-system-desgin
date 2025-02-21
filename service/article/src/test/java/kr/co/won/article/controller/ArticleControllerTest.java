@@ -6,6 +6,7 @@ import kr.co.won.article.service.response.ArticleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import org.hibernate.type.ListType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClient;
@@ -106,6 +107,33 @@ class ArticleControllerTest {
                         .build())
                 .retrieve()
                 .body(ArticlePageResponse.class);
+    }
+
+    @DisplayName(value = "06. infinity scroll Tests")
+    @Test
+    void infinityScrollTests() {
+        Long boardId = 1l;
+        Long pageSize = 10l;
+        List<ArticleResponse> firstResponse = restClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/api/articles/infinity-scroll")
+                        .queryParam("boardId", boardId)
+                        .queryParam("size", pageSize)
+                        .build())
+                .retrieve()
+                .body(List.class);
+
+        ArticleResponse lastArticleResponse = firstResponse.get(firstResponse.size() - 1);
+
+        Long lastArticleId = lastArticleResponse.getArticleId();
+
+        List<ArticleResponse> secondResponse = restClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/api/articles/infinity-scroll")
+                        .queryParam("boardId", boardId)
+                        .queryParam("size", pageSize)
+                        .queryParam("lastArticleId", lastArticleId)
+                        .build())
+                .retrieve()
+                .body(List.class);
 
 
     }

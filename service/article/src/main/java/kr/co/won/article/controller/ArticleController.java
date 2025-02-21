@@ -8,6 +8,8 @@ import kr.co.won.article.service.response.ArticleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/articles")
 @RequiredArgsConstructor
@@ -18,6 +20,11 @@ public class ArticleController {
     @GetMapping
     public ArticlePageResponse pagingArticleResponse(@RequestParam("boardId") Long boardId, @RequestParam("page") Long pageNumber, @RequestParam("size") Long pageSize) {
         return articleService.pageArticle(boardId, pageNumber, pageSize);
+    }
+
+    @GetMapping(path = "/infinity-scroll")
+    public List<ArticleResponse> infinityScrollArticle(@RequestParam("boardId") Long boardId, @RequestParam("size") Long pageSize, @RequestParam("lastArticleId") Long lastArticleId) {
+        return articleService.infinityScrollArticle(boardId, pageSize, lastArticleId);
     }
 
     @GetMapping(path = "/{articleId}")

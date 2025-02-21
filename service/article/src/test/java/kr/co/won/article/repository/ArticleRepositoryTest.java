@@ -40,4 +40,24 @@ class ArticleRepositoryTest {
         Long countPage = articleRepository.countPage(1l, 10000l);
         assertEquals(countPage, 10000l);
     }
+
+    @DisplayName(value = "03. infinity scroll First Call Tests")
+    @Test
+    void findFirstInfinityScrollTests() {
+        List<ArticleEntity> firstInfinityScroll = articleRepository.findAllInfinityScroll(1l, 30l);
+        assertEquals(firstInfinityScroll.size(), 30);
+    }
+
+    @DisplayName(value = "04. infinity scroll second call Tests")
+    @Test
+    void findSecondInfinityScrollTests() {
+        List<ArticleEntity> firstInfinityScroll = articleRepository.findAllInfinityScroll(1l, 30l);
+        assertEquals(firstInfinityScroll.size(), 30);
+        ArticleEntity lastArticleEntity = firstInfinityScroll.get(firstInfinityScroll.size() - 1);
+        List<ArticleEntity> allInfinityScroll = articleRepository.findAllInfinityScroll(1l, 30l, lastArticleEntity.getArticleId());
+        for (ArticleEntity articleEntity : allInfinityScroll) {
+            log.info("articleEntity: {}", articleEntity.getArticleId());
+        }
+
+    }
 }

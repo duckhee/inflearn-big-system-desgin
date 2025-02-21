@@ -28,4 +28,26 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     @Query(value = "SELECT COUNT(*) FROM ( SELECT article_id FROM tbl_article WHERE board_id= :boardId ORDER BY article_id DESC LIMIT :limit) t", nativeQuery = true)
     Long countPage(@Param("boardId") Long boardId, @Param("limit") Long limit);
 
+    /**
+     * 무한 스크롤 처음 요청 시 처리를 하는 쿼리
+     *
+     * @param boarId
+     * @param limit
+     * @return
+     */
+    @Query(value = "SELECT tbl_article.article_id, tbl_article.title, tbl_article.content, tbl_article.board_id, tbl_article.writer_id, tbl_article.created_at, tbl_article.modified_at FROM tbl_article " +
+            "WHERE board_id= :boardId ORDER BY article_id DESC LIMIT :limit", nativeQuery = true)
+    List<ArticleEntity> findAllInfinityScroll(@Param("boardId") Long boarId, @Param("limit") Long limit);
+
+    /**
+     * 무한 스크롤 기준점이 있을 때 요청 시 처리를 하는 쿼리
+     *
+     * @param boarId
+     * @param limit
+     * @return
+     */
+    @Query(value = "SELECT tbl_article.article_id, tbl_article.title, tbl_article.content, tbl_article.board_id, tbl_article.writer_id, tbl_article.created_at, tbl_article.modified_at FROM tbl_article " +
+            "WHERE board_id= :boardId AND article_id < :lastArticleId ORDER BY article_id DESC LIMIT :limit", nativeQuery = true)
+    List<ArticleEntity> findAllInfinityScroll(@Param("boardId") Long boarId, @Param("limit") Long limit, @Param("lastArticleId") Long lastArticleId);
+
 }

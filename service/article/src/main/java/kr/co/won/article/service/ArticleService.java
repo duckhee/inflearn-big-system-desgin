@@ -53,6 +53,14 @@ public class ArticleService {
         return ArticleResponse.fromEntity(findArticle);
     }
 
+    /**
+     * 일반적으로 사용을 하는 페이지 번호가 보이는 페이징 처리
+     *
+     * @param boardId
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
     public ArticlePageResponse pageArticle(Long boardId, Long pageNumber, Long pageSize) {
         Long pageLimitCount = PageLimitCalculator.calculatePageLimit(pageNumber, pageSize, 10L);
         Long countPage = articleRepository.countPage(boardId, pageLimitCount);
@@ -60,6 +68,19 @@ public class ArticleService {
         List<ArticleResponse> pageArticleResponse = articleRepository.pagingQuery(boardId, pageOffset, pageSize).stream()
                 .map(ArticleResponse::fromEntity).toList();
         return ArticlePageResponse.of(pageArticleResponse, countPage);
+    }
+
+    /**
+     * 무한 스크롤 형태로 사용을 할 때 사용을 하는 리스트 처리
+     *
+     * @param boardId
+     * @param pageSize
+     * @param lastArticleId
+     * @return
+     */
+    public List<ArticleResponse> infinityScrollArticle(Long boardId, Long pageSize, Long lastArticleId) {
+        List<ArticleEntity> articleEntities = lastArticleId == null ? articleRepository.findAllInfinityScroll(boardId, pageSize) : articleRepository.findAllInfinityScroll(boardId, pageSize, lastArticleId);
+        return articleEntities.stream().map(ArticleResponse::fromEntity).toList();
     }
 
     @Transactional

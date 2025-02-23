@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS `platform_comment`;
+CREATE DATABASE IF NOT EXISTS `platform_article`;

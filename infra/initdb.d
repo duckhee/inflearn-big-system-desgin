@@ -35,3 +35,8 @@ create table platform_comment.tbl_comment
     deleted           BOOL          NOT NULL DEFAULT FALSE COMMENT "comment delete or not flag",
     created_at        DATETIME      NOT NULL COMMENT "comment write time"
 );
+
+/** 댓글에 대한 목록 조회 시 사용할 Index를 생성을 하는 Query */
+CREATE INDEX idx_article_id_parent_comment_id_comment_id ON platform_comment.tbl_comment (
+	article_id ASC, parent_comment_id ASC, comment_id ASC
+);

@@ -3,13 +3,16 @@ package kr.co.won.comment.service;
 import kr.co.won.comment.entity.CommentEntity;
 import kr.co.won.comment.repository.CommentRepository;
 import kr.co.won.comment.service.request.CommentCreateRequest;
+import kr.co.won.comment.service.response.CommentPageResponse;
 import kr.co.won.comment.service.response.CommentResponse;
+import kr.co.won.comment.service.utils.paging.PageLimitCalculator;
 import kr.co.won.common.snowflake.Snowflake;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.stream.events.Comment;
+import java.util.List;
 import java.util.function.Predicate;
 
 @Service
@@ -46,6 +49,21 @@ public class CommentService {
                         commentDeleteDB(comment);
                     }
                 });
+    }
+
+    public CommentPageResponse pagingComment(Long articleId, Long pageNumber, Long pageSize) {
+        Long offset = (pageNumber - 1) * pageSize;
+        List<CommentResponse> pagingResponse = commentRepository.pagingComment(articleId, offset, pageSize).stream()
+                .map(CommentResponse::from).toList();
+        Long pageCounter = commentRepository.commentPagingNumberCount(articleId, PageLimitCalculator.calculatePageLimit(pageNumber, pageSize, 10l));
+
+        return CommentPageResponse.of(pagingResponse, pageCounter);
+    }
+
+    public List<CommentResponse> infinityScrollComment(Long articleId, Long lastParentCommentId, Long lastCommentId, Long limit) {
+        List<CommentEntity> commentResponses = lastParentCommentId == null || lastCommentId == null ? commentRepository.infinityScrollComment(articleId, limit) : commentRepository.infinityScrollComment(articleId, lastParentCommentId, lastCommentId, limit);
+        return commentResponses.stream()
+                .map(CommentResponse::from).toList();
     }
 
 

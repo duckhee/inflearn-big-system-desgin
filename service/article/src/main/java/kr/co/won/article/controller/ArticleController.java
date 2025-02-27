@@ -23,7 +23,7 @@ public class ArticleController {
     }
 
     @GetMapping(path = "/infinity-scroll")
-    public List<ArticleResponse> infinityScrollArticle(@RequestParam("boardId") Long boardId, @RequestParam("size") Long pageSize, @RequestParam("lastArticleId") Long lastArticleId) {
+    public List<ArticleResponse> infinityScrollArticle(@RequestParam("boardId") Long boardId, @RequestParam("size") Long pageSize, @RequestParam(value = "lastArticleId", required = false) Long lastArticleId) {
         return articleService.infinityScrollArticle(boardId, pageSize, lastArticleId);
     }
 

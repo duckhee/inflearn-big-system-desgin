@@ -7,8 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.type.ListType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
@@ -107,6 +110,7 @@ class ArticleControllerTest {
                         .build())
                 .retrieve()
                 .body(ArticlePageResponse.class);
+        Assertions.assertEquals(response.getArticles().size(), 10);
     }
 
     @DisplayName(value = "06. infinity scroll Tests")

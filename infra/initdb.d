@@ -43,13 +43,13 @@ CREATE INDEX idx_article_id_parent_comment_id_comment_id ON platform_comment.tbl
 
 # 무한 댓글을 위한 테이블
 CREATE TABLE tbl_infinity_comments(
-	comment_id BIGINT NOT NULL PRIMARY KEY,
-	content VARCHAR(3000) NOT NULL,
-	article_id BIGINT NOT NULL,
-	writer_id BIGINT NOT NULL,
-	path VARCHAR(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-	deleted BOOL NOT NULL,
-	created_at DATETIME NOT NULL
+	comment_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is infinity comment ID",
+	content VARCHAR(3000) NOT NULL COMMENT "This is comment content",
+	article_id BIGINT NOT NULL COMMENT "article ID(Shard Key)",
+	writer_id BIGINT NOT NULL COMMENT "writer ID",
+	path VARCHAR(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT "depth path using Tree path",
+	deleted BOOL NOT NULL COMMENT "This is checking delete or not flag",
+	created_at DATETIME NOT NULL COMMENT "comment write time"
 );
 
 # 무한 댓글에서 사용을 할 인덱스

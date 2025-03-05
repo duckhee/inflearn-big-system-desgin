@@ -24,7 +24,7 @@ CREATE TABLE platform_article.tbl_article
 CREATE INDEX idx_board_id_article_id ON platform_article.tbl_article (board_id ASC, article_id DESC);
 
 
-CREATE TABLE IF NOT platform_comment.tbl_comment
+CREATE TABLE platform_comment.tbl_comment
 (
     comment_id        BIGINT        NOT NULL PRIMARY KEY COMMENT "This is comment ID",
     content           VARCHAR(3000) NOT NULL COMMENT "This is comment content",
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT platform_comment.tbl_comment
 );
 
 # 무한 댓글을 위한 테이블
-CREATE TABLE IF NOT platform_comment.tbl_infinity_comments(
+CREATE TABLE platform_comment.tbl_infinity_comments(
 	comment_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is infinity comment ID",
 	content VARCHAR(3000) NOT NULL COMMENT "This is comment content",
 	article_id BIGINT NOT NULL COMMENT "article ID(Shard Key)",
@@ -48,10 +48,8 @@ CREATE TABLE IF NOT platform_comment.tbl_infinity_comments(
 );
 
 /** 댓글에 대한 목록 조회 시 사용할 Index를 생성을 하는 Query */
-CREATE INDEX idx_article_id_parent_comment_id_comment_id ON platform_comment.tbl_comment (
-	article_id ASC, parent_comment_id ASC, comment_id ASC
-);
+CREATE INDEX idx_article_id_parent_comment_id_comment_id ON `platform_comment`.tbl_comment( article_id ASC, parent_comment_id ASC, comment_id ASC);
 
 
 # 무한 댓글에서 사용을 할 인덱스
-CREATE UNIQUE INDEX idx_article_id_path ON platform_comment.tbl_infinity_comments( article_id ASC, path ASC);
+CREATE UNIQUE INDEX  idx_article_id_path ON `platform_comment`.tbl_infinity_comments( article_id ASC, path ASC);

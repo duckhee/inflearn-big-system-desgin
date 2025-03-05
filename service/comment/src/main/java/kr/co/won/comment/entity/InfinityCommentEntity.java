@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @Entity
-@Table(name = "tbl_infinity_comment")
+@Table(name = "tbl_infinity_comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
 public class InfinityCommentEntity {
@@ -50,11 +50,11 @@ public class InfinityCommentEntity {
         return comment;
     }
 
-    public boolean isRootComment(){
+    public boolean isRootComment() {
         return commentPath.isRootComment();
     }
 
-    public void delete(){
+    public void delete() {
         this.deleted = true;
     }
 

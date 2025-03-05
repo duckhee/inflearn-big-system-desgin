@@ -4,11 +4,14 @@ import kr.co.won.comment.entity.CommentPath;
 import kr.co.won.comment.entity.InfinityCommentEntity;
 import kr.co.won.comment.repository.InfinityCommentRepository;
 import kr.co.won.comment.service.request.InfinityCommentCreateRequest;
+import kr.co.won.comment.service.response.CommentPageResponse;
 import kr.co.won.comment.service.response.CommentResponse;
+import kr.co.won.comment.service.utils.paging.PageLimitCalculator;
 import kr.co.won.common.snowflake.Snowflake;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 @Service
@@ -76,4 +79,15 @@ public class InfinityCommentService {
                 .orElseThrow();
     }
 
+    public CommentPageResponse pagingComments(Long articleId, Long pageNumber, Long pageSize) {
+        List<CommentResponse> comments = commentRepository.pagingComments(articleId, (pageNumber - 1) * pageSize, pageSize).stream()
+                .map(CommentResponse::from).toList();
+        Long pagingNumber = commentRepository.commentPagingNumber(articleId, PageLimitCalculator.calculatePageLimit(pageNumber, pageSize, 10l));
+        return CommentPageResponse.of(comments, pagingNumber);
+    }
+
+    public List<CommentResponse> infinityScrollComments(Long articleId, String lastPath, Long pageSize) {
+        List<InfinityCommentEntity> scrollCommentsEntity = (lastPath == null) ? commentRepository.infinityCommentsScroll(articleId, pageSize) : commentRepository.infinityCommentsScroll(articleId, lastPath, pageSize);
+        return scrollCommentsEntity.stream().map(CommentResponse::from).toList();
+    }
 }

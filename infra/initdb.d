@@ -1,11 +1,15 @@
 # database create
 CREATE DATABASE IF NOT EXISTS `platform_comment`;
 CREATE DATABASE IF NOT EXISTS `platform_article`;
+CREATE DATABASE IF NOT EXISTS `platform_article_like`;
 
 # user add grant
 GRANT SELECT, INSERT, UPDATE, DELETE ON platform_comment.* TO 'big_system'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON platform_article.* TO 'big_system'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON platform_article_like.* TO 'big_system'@'%';
 
+# 권한에 대한 적용
+FLUSH PRIVILEGES;
 
 # create database
 CREATE TABLE platform_article.tbl_article
@@ -36,6 +40,9 @@ CREATE TABLE platform_comment.tbl_comment
     created_at        DATETIME      NOT NULL COMMENT "comment write time"
 );
 
+/** 댓글에 대한 목록 조회 시 사용할 Index를 생성을 하는 Query */
+CREATE INDEX idx_article_id_parent_comment_id_comment_id ON `platform_comment`.tbl_comment( article_id ASC, parent_comment_id ASC, comment_id ASC);
+
 # 무한 댓글을 위한 테이블
 CREATE TABLE platform_comment.tbl_infinity_comments(
 	comment_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is infinity comment ID",
@@ -47,9 +54,18 @@ CREATE TABLE platform_comment.tbl_infinity_comments(
 	created_at DATETIME NOT NULL COMMENT "comment write time"
 );
 
-/** 댓글에 대한 목록 조회 시 사용할 Index를 생성을 하는 Query */
-CREATE INDEX idx_article_id_parent_comment_id_comment_id ON `platform_comment`.tbl_comment( article_id ASC, parent_comment_id ASC, comment_id ASC);
-
-
 # 무한 댓글에서 사용을 할 인덱스
 CREATE UNIQUE INDEX  idx_article_id_path ON `platform_comment`.tbl_infinity_comments( article_id ASC, path ASC);
+
+# 좋아요를 위한 테이블
+CREATE TABLE platform_article_like.tbl_article_like
+(
+    article_like_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is article like PK",
+    article_id BIGINT NOT NULL COMMENT "article ID this is using shard key",
+    user_id BIGINT NOT NULL COMMENT "article like user",
+    created_at DATETIME NOT NULL COMMENT "user push article like date time"
+);
+
+# 좋아요에 대한 게시글에 대한 제약 조건인 게시글에는 한 사용자가 1개만 좋아요를 할 수 있다는 것을 표현하기 위한 UNIQUE INDEX
+CREATE UNIQUE INDEX idx_article_id_user_id ON `platform_article_like`.tbl_article_like(article_id ASC, user_id ASC );
+

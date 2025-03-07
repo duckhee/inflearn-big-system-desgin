@@ -1,4 +1,4 @@
-package kr.co.won.article;
+package kr.co.won.articleread;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

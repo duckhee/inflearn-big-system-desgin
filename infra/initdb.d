@@ -69,3 +69,10 @@ CREATE TABLE platform_article_like.tbl_article_like
 # 좋아요에 대한 게시글에 대한 제약 조건인 게시글에는 한 사용자가 1개만 좋아요를 할 수 있다는 것을 표현하기 위한 UNIQUE INDEX
 CREATE UNIQUE INDEX idx_article_id_user_id ON `platform_article_like`.tbl_article_like(article_id ASC, user_id ASC );
 
+# 좋아요 수에 대한 테이블
+CREATE TABLE platform_article_like.tbl_article_like_count
+(
+    article_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is article like count PK",
+    like_count BIGINT NOT NULL COMMENT "This is like number",
+    version BIGINT NOT NULL COMMENT "optimistic lock version column"
+);

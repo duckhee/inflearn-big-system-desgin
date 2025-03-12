@@ -7,6 +7,7 @@ CREATE DATABASE IF NOT EXISTS `platform_article_like`;
 GRANT SELECT, INSERT, UPDATE, DELETE ON platform_comment.* TO 'big_system'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON platform_article.* TO 'big_system'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON platform_article_like.* TO 'big_system'@'%';
+#GRANT ALL PRIVILEGES ON platform_article_like.* TO 'big_system'@'%';
 
 # 권한에 대한 적용
 FLUSH PRIVILEGES;

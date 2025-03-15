@@ -147,6 +147,33 @@ class InfinityCommentControllerTest {
         }
     }
 
+    @DisplayName(value = "06. comment count에 대한 테스트 ")
+    @Test
+    void countCommentTests() {
+        InfinityCommentCreateRequest request = new InfinityCommentCreateRequest(2l, "my comments1", null, 1l);
+        CommentResponse createCommentResponse = createRestClient(request);
+
+        Long response = restClient.get()
+                .uri("/api/infinity-comments/articles/{articleId}/count", 2l)
+                .retrieve()
+                .body(Long.class);
+
+        assertEquals(response, 1l);
+
+        restClient.delete()
+                .uri("/api/infinity-comments/{commentId}", createCommentResponse.getCommentId())
+                .retrieve()
+                .body(Void.class);
+
+        response = restClient.get()
+                .uri("/api/infinity-comments/articles/{articleId}/count", 2l)
+                .retrieve()
+                .body(Long.class);
+
+        assertEquals(response, 0l);
+
+    }
+
     @Getter
     @AllArgsConstructor
     class InfinityCommentCreateRequest {

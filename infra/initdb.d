@@ -50,12 +50,6 @@ CREATE TABLE platform_comment.tbl_comment
 /** 댓글에 대한 목록 조회 시 사용할 Index를 생성을 하는 Query */
 CREATE INDEX idx_article_id_parent_comment_id_comment_id ON `platform_comment`.tbl_comment( article_id ASC, parent_comment_id ASC, comment_id ASC);
 
-# 댓글 수에 대한 테이블 생성
-CREATE TABLE platform_comment.tbl_article_comment_count(
-    article_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is article comment count Primary Key -> using shard key",
-    comment_count BIGINT NOT NULL COMMENT "This is article comment number"
-);
-
 # 무한 댓글을 위한 테이블
 CREATE TABLE platform_comment.tbl_infinity_comments(
 	comment_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is infinity comment ID",
@@ -65,6 +59,12 @@ CREATE TABLE platform_comment.tbl_infinity_comments(
 	path VARCHAR(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT "depth path using Tree path",
 	deleted BOOL NOT NULL COMMENT "This is checking delete or not flag",
 	created_at DATETIME NOT NULL COMMENT "comment write time"
+);
+
+# 댓글 수에 대한 테이블 생성
+CREATE TABLE platform_comment.tbl_article_comment_count(
+    article_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is article comment count Primary Key -> using shard key",
+    comment_count BIGINT NOT NULL COMMENT "This is article comment number"
 );
 
 # 무한 댓글에서 사용을 할 인덱스

@@ -1,7 +1,9 @@
 package kr.co.won.comment.service;
 
+import kr.co.won.comment.entity.ArticleCommentCountEntity;
 import kr.co.won.comment.entity.CommentPath;
 import kr.co.won.comment.entity.InfinityCommentEntity;
+import kr.co.won.comment.repository.ArticleCommentCountRepository;
 import kr.co.won.comment.repository.InfinityCommentRepository;
 import kr.co.won.comment.service.request.InfinityCommentCreateRequest;
 import kr.co.won.comment.service.response.CommentPageResponse;
@@ -19,6 +21,7 @@ import java.util.function.Predicate;
 public class InfinityCommentService {
 
     private final InfinityCommentRepository commentRepository;
+    private final ArticleCommentCountRepository commentCountRepository;
 
     private final Snowflake snowflake = new Snowflake();
 
@@ -29,6 +32,11 @@ public class InfinityCommentService {
         String findDescendantTopPath = commentRepository.findDescendantTopPath(request.getArticleId(), parentPath.getPath()).orElse(null);
         InfinityCommentEntity newComment = InfinityCommentEntity.create(snowflake.nextId(), request.getContent(), request.getArticleId(), request.getWriterId(), parentPath.getChildCommentPath(findDescendantTopPath));
         InfinityCommentEntity savedNewComment = commentRepository.save(newComment);
+        /** 댓글 수에 대한 증가 */
+        int commentCount = commentCountRepository.increaseCommentCount(request.getArticleId());
+        if (commentCount == 0) {
+            commentCountRepository.save(ArticleCommentCountEntity.init(request.getArticleId(), 1l));
+        }
         return CommentResponse.from(savedNewComment);
     }
 
@@ -46,13 +54,20 @@ public class InfinityCommentService {
                     } else {
                         deleteInDatabase(comment);
                     }
-
                 });
 
     }
 
+    public Long commentCount(Long articleId) {
+        return commentCountRepository.findById(articleId)
+                .map(ArticleCommentCountEntity::getCommentCount)
+                .orElse(0L);
+    }
+
     private void deleteInDatabase(InfinityCommentEntity comment) {
         commentRepository.delete(comment);
+        /** DB dㅔ서 삭제가 될 때에만 count 의 수를 줄여준다. */
+        commentCountRepository.decreaseCommentCount(comment.getArticleId());
         /** 재귀적으로 호출을 해주기 위한 것 */
         if (!comment.isRootComment()) {
             commentRepository.findByPath(comment.getCommentPath().getPath())
@@ -83,6 +98,7 @@ public class InfinityCommentService {
         List<CommentResponse> comments = commentRepository.pagingComments(articleId, (pageNumber - 1) * pageSize, pageSize).stream()
                 .map(CommentResponse::from).toList();
         Long pagingNumber = commentRepository.commentPagingNumber(articleId, PageLimitCalculator.calculatePageLimit(pageNumber, pageSize, 10l));
+//        Long pagingNumber = commentCount(articleId);
         return CommentPageResponse.of(comments, pagingNumber);
     }
 

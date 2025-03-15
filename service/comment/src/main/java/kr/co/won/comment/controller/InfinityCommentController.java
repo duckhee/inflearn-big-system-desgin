@@ -21,6 +21,11 @@ public class InfinityCommentController {
         return commentService.pagingComments(articleId, pageNumber, pageSize);
     }
 
+    @GetMapping(path = "/articles/{articleId}/count")
+    public Long commentCountResponse(@PathVariable(name = "articleId") Long articleId) {
+        return commentService.commentCount(articleId);
+    }
+
     @GetMapping(path = "/infinity-scroll")
     public List<CommentResponse> infinityScrollComments(@RequestParam("articleId") Long articleId, @RequestParam(name = "lastPath", required = false) String lastPath, @RequestParam("size") Long pageSize) {
         return commentService.infinityScrollComments(articleId, lastPath, pageSize);

@@ -138,7 +138,28 @@ class ArticleControllerTest {
                         .build())
                 .retrieve()
                 .body(List.class);
+    }
 
+    @DisplayName(value = "07. board article count Tests")
+    @Test
+    void boardCountTests() {
+        ArticleResponse articleResponse = createArticleResponse(new ArticleCreateRequest("hi", "my content", 1L, 2L));
+
+        Long boardArticleCount = restClient.get()
+                .uri("/api/articles/boards/{boardId}/article-count", articleResponse.getBoardId())
+                .retrieve()
+                .body(Long.class);
+
+        assertEquals(boardArticleCount, 1L);
+        /** delete article */
+        deleteArticleResponse(articleResponse.getArticleId());
+
+        boardArticleCount = restClient.get()
+                .uri("/api/articles/boards/{boardId}/article-count", articleResponse.getBoardId())
+                .retrieve()
+                .body(Long.class);
+
+        assertEquals(boardArticleCount, 0l);
 
     }
 

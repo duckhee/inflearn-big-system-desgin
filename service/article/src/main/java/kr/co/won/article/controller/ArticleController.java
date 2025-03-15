@@ -32,6 +32,11 @@ public class ArticleController {
         return articleService.findArticle(articleId);
     }
 
+    @GetMapping(path = "/boards/{boardId}/article-count")
+    public Long boardArticleCountResponse(@PathVariable(name = "boardId") Long boardId) {
+        return articleService.articleCountNumber(boardId);
+    }
+
     @PostMapping
     public ArticleResponse createArticleResponse(@RequestBody ArticleCreateRequest request) {
         return articleService.createArticle(request);
@@ -46,4 +51,6 @@ public class ArticleController {
     public void deleteArticleResponse(@PathVariable Long articleId) {
         articleService.deleteArticle(articleId);
     }
+
+
 }

@@ -1,7 +1,9 @@
 package kr.co.won.article.service;
 
 import kr.co.won.article.entity.ArticleEntity;
+import kr.co.won.article.entity.BoardArticleCountEntity;
 import kr.co.won.article.repository.ArticleRepository;
+import kr.co.won.article.repository.BoardArticleCountRepository;
 import kr.co.won.article.service.request.ArticleCreateRequest;
 import kr.co.won.article.service.request.ArticleUpdateRequest;
 import kr.co.won.article.service.response.ArticlePageResponse;
@@ -20,6 +22,7 @@ import java.util.stream.Stream;
 public class ArticleService {
     private final Snowflake snowflake = new Snowflake();
     private final ArticleRepository articleRepository;
+    private final BoardArticleCountRepository articleCountRepository;
 
     @Transactional
     public ArticleResponse createArticle(ArticleCreateRequest request) {
@@ -32,6 +35,13 @@ public class ArticleService {
                         request.getWriterId()
                 )
         );
+
+        /** 게시글에 대한 수 증가 */
+        int articleCount = articleCountRepository.increaseArticleCount(request.getBoardId());
+        if (articleCount == 0) {
+            articleCountRepository.save(BoardArticleCountEntity.init(request.getBoardId(), 1l));
+        }
+
         return ArticleResponse.fromEntity(article);
     }
 
@@ -85,6 +95,21 @@ public class ArticleService {
 
     @Transactional
     public void deleteArticle(Long articleId) {
+        ArticleEntity findArticle = articleRepository.findById(articleId).orElseThrow();
         articleRepository.deleteById(articleId);
+        /** 게시글 수 감소 */
+        articleCountRepository.decreaseArticleCount(findArticle.getBoardId());
+    }
+
+    /**
+     * 게시글의 수를 반환을 하는 함수
+     *
+     * @param boardId
+     * @return
+     */
+    public Long articleCountNumber(Long boardId) {
+        return articleCountRepository.findById(boardId)
+                .map(BoardArticleCountEntity::getArticleCount)
+                .orElse(0l);
     }
 }

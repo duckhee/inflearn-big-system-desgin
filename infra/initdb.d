@@ -28,6 +28,12 @@ CREATE TABLE platform_article.tbl_article
 # CREATE INDEX idx_board_id_article_id ON platform_article.tbl_article (board_id ASC, article_id DESC);
 CREATE INDEX idx_board_id_article_id ON platform_article.tbl_article (board_id ASC, article_id DESC);
 
+# 게시글 수에 대한 테이블 생성
+CREATE TABLE platform_article.tbl_board_article_count(
+    board_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is article count Primary key -> using shard key",
+    article_count BIGINT NOT NULL COMMENT "article count number"
+);
+
 
 CREATE TABLE platform_comment.tbl_comment
 (
@@ -43,6 +49,12 @@ CREATE TABLE platform_comment.tbl_comment
 
 /** 댓글에 대한 목록 조회 시 사용할 Index를 생성을 하는 Query */
 CREATE INDEX idx_article_id_parent_comment_id_comment_id ON `platform_comment`.tbl_comment( article_id ASC, parent_comment_id ASC, comment_id ASC);
+
+# 댓글 수에 대한 테이블 생성
+CREATE TABLE platform_comment.tbl_article_comment_count(
+    article_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is article comment count Primary Key -> using shard key",
+    comment_count BIGINT NOT NULL COMMENT "This is article comment number"
+);
 
 # 무한 댓글을 위한 테이블
 CREATE TABLE platform_comment.tbl_infinity_comments(

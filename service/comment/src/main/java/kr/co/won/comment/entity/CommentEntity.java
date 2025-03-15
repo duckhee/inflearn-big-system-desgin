@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 
 @Getter
 @ToString
-@Entity
-@Table(name = "tbl_comment")
+//@Entity
+//@Table(name = "tbl_comment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentEntity {
 
-    @Id
+//    @Id
     private Long commentId;
 
     private String content;

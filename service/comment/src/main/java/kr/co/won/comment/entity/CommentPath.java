@@ -9,7 +9,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-@Embeddable
+//@Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentPath {
 
@@ -39,7 +39,7 @@ public class CommentPath {
     private static final String MAX_CHUNK = String.valueOf(CHARSET.charAt(CHARSET.length() - 1)).repeat(DEPTH_CHUNK_SIZE);
 
 
-    @Column(name = "path")
+//    @Column(name = "path")
     private String path;
 
     public static CommentPath create(String path) {

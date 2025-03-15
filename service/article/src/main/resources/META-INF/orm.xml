@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+        xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+                            http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
+        version="2.2">
+
+    <persistence-unit-metadata>
+        <!-- 이 설정을 추가하면 XML이 어노테이션보다 우선됨 -->
+        <xml-mapping-metadata-complete/>
+    </persistence-unit-metadata>
+    <!-- tbl_article -->
+    <entity class="kr.co.won.article.entity.ArticleEntity" name="ArticleEntity" access="FIELD">
+        <table name="tbl_article"/>
+        <attributes>
+            <id name="articleId">
+                <column name="article_id" unique="true" nullable="false"/>
+            </id>
+            <basic name="boardId">
+                <column name="board_id" nullable="false"/>
+            </basic>
+            <basic name="content">
+                <column name="content" nullable="false"/>
+                <lob/>
+            </basic>
+            <basic name="writerId">
+                <column name="writer_id"/>
+            </basic>
+            <basic name="createdAt">
+                <column name="created_at"/>
+            </basic>
+            <basic name="modifiedAt">
+                <column name="modified_at"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <!--tbl_board_article_count-->
+    <entity class="kr.co.won.article.entity.BoardArticleCountEntity" name="BoardArticleCountEntity" access="FIELD">
+        <table name="tbl_board_article_count"/>
+        <attributes>
+            <id name="boardId"/>
+            <basic name="articleCount">
+                <column name="article_count"/>
+            </basic>
+        </attributes>
+    </entity>
+
+</entity-mappings>

@@ -11,12 +11,12 @@ import lombok.ToString;
 
 @Getter
 @ToString
-@Table(name = "tbl_article_like_count")
-@Entity
+//@Table(name = "tbl_article_like_count")
+//@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ArticleLikeCountEntity {
 
-    @Id
+//    @Id
     private Long articleId; // primary key and shard key
 
     private Long likeCount;
@@ -24,7 +24,7 @@ public class ArticleLikeCountEntity {
     /**
      * OPTIMISTIC Lock(낙관적 락)에서 사용할 버전 값
      */
-    @Version
+//    @Version
     private Long version = 0l;
 
     /**

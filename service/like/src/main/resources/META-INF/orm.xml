@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+                            http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
+                 version="2.2">
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete/>
+    </persistence-unit-metadata>
+
+    <!--tbl_article_like-->
+    <entity class="kr.co.won.like.entity.ArticleLikeEntity" access="FIELD" name="ArticleLikeEntity">
+        <table name="tbl_article_like" schema="platform_article_like">
+            <index column-list="article_id ASC, user_id ASC" name="idx_article_id_user_id" unique="true"/>
+        </table>
+        <attributes>
+            <id name="articleLikeId">
+                <column name="article_like_id" nullable="false" unique="true"/>
+            </id>
+            <basic name="articleId">
+                <column name="article_id" nullable="false"/>
+            </basic>
+            <basic name="userId">
+                <column name="user_id" nullable="false"/>
+            </basic>
+            <basic name="createdAt">
+                <column name="created_at" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+    <!--like count-->
+    <entity class="kr.co.won.like.entity.ArticleLikeCountEntity" name="ArticleLikeCountEntity" access="FIELD">
+        <table name="tbl_article_like_count" schema="platform_article_like">
+        </table>
+        <attributes>
+            <id name="articleId">
+                <column name="article_id" unique="true" nullable="false"/>
+            </id>
+            <basic name="likeCount">
+                <column name="like_count" nullable="false"/>
+            </basic>
+            <version name="version">
+                <column name="version" nullable="false"/>
+            </version>
+        </attributes>
+    </entity>
+</entity-mappings>

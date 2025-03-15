@@ -21,3 +21,5 @@ spring:
     hibernate:
       ddl-auto: none
     database: mysql
+    mapping-resources:
+      - META-INF/orm.xml

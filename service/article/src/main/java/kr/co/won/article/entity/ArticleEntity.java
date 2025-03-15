@@ -12,13 +12,13 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 
 @Getter
-@Entity
-@Table(name = "tbl_article")
+//@Entity
+//@Table(name = "tbl_article")
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ArticleEntity {
 
-    @Id
+//    @Id
     private Long articleId;
 
     private String title;

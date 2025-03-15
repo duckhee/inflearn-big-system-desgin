@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 
 @Getter
 @ToString
-@Entity
-@Table(name = "tbl_infinity_comments")
+//@Entity
+//@Table(name = "tbl_infinity_comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
 public class InfinityCommentEntity {
 
-    @Id
+//    @Id
     private Long commentId;
 
     private String content;
@@ -27,7 +27,7 @@ public class InfinityCommentEntity {
     /**
      * 자체적으로 사용을 할 Logic에 대해서 분리를 하기 위해서 Embedded로 만들어서 관심사를 분리를 해준다.
      */
-    @Embedded
+//    @Embedded
     private CommentPath commentPath;
 
     private Long articleId; // shard Key

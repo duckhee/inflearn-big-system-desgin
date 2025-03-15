@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+                            http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
+                 version="2.2">
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete/>
+    </persistence-unit-metadata>
+
+    <!--comment-->
+    <entity class="kr.co.won.comment.entity.CommentEntity" access="FIELD" name="CommentEntity">
+        <table name="tbl_comment" schema="platform_comment">
+            <index column-list="article_id ASC, parent_comment_id ASC, comment_id ASC"
+                   name="idx_article_id_parent_comment_id_comment_id">
+                <description>comment list search using query</description>
+            </index>
+        </table>
+        <attributes>
+            <id name="commentId">
+                <column name="comment_id" nullable="false" unique="true"/>
+            </id>
+            <basic name="content">
+                <column name="content" nullable="false"/>
+            </basic>
+            <basic name="articleId">
+                <column name="article_id" nullable="false"/>
+            </basic>
+            <basic name="parentCommentId">
+                <column name="parent_comment_id" nullable="false"/>
+            </basic>
+            <basic name="writerId">
+                <column name="writer_id" nullable="false"/>
+            </basic>
+            <basic name="deleted">
+                <column name="deleted" nullable="false"/>
+            </basic>
+            <basic name="createdAt">
+                <column name="created_at" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <!--infinity comment-->
+    <entity class="kr.co.won.comment.entity.InfinityCommentEntity" access="FIELD" name="InfinityCommentEntity">
+        <table name="tbl_infinity_comments" schema="platform_comment">
+            <index column-list="article_id ASC, path ASC" name="idx_article_id_path" unique="true">
+                <description>infinity comment used</description>
+            </index>
+        </table>
+        <attributes>
+            <id name="commentId">
+                <column name="comment_id" unique="true" nullable="false"/>
+            </id>
+            <basic name="content">
+                <column name="content" nullable="false"/>
+            </basic>
+            <basic name="articleId">
+                <column name="article_id" nullable="false"/>
+            </basic>
+            <basic name="writerId">
+                <column name="writer_id" nullable="false"/>
+            </basic>
+            <basic name="deleted">
+                <column nullable="false" name="deleted"/>
+            </basic>
+            <basic name="createdAt">
+                <column name="created_at" nullable="false"/>
+            </basic>
+            <!--embedded mapping-->
+            <embedded name="commentPath">
+                <attribute-override name="path">
+                    <column name="path" length="25" nullable="false"/>
+                </attribute-override>
+            </embedded>
+        </attributes>
+    </entity>
+    <!--like count-->
+    <entity class="kr.co.won.comment.entity.ArticleCommentCountEntity" name="ArticleCommentCountEntity" access="FIELD">
+        <table name="tbl_article_comment_count" schema="platform_comment">
+        </table>
+        <attributes>
+            <id name="articleId">
+                <column name="article_id" nullable="false" unique="true"/>
+            </id>
+            <basic name="commentCount">
+                <column name="comment_count" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

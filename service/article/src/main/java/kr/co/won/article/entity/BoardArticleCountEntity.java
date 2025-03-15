@@ -10,8 +10,8 @@ import lombok.ToString;
 
 @Getter
 @ToString
-@Entity
-@Table(name = "tbl_board_article_count")
+//@Entity
+//@Table(name = "tbl_board_article_count")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardArticleCountEntity {
 

@@ -10,14 +10,14 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Entity
+//@Entity
 @Getter
 @ToString
-@Table(name = "tbl_article_like")
+//@Table(name = "tbl_article_like")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ArticleLikeEntity {
 
-    @Id
+//    @Id
     private Long articleLikeId;
 
     private Long articleId; // shard key

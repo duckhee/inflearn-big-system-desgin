@@ -22,3 +22,23 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./initdb.d:/docker-entrypoint-initdb.d/init.sql
+    logging:
+      options:
+        max-file: "3"
+        max-size: "10MB"
+  inMemoryDB:
+    image: bitnami/redis
+    container_name: subDatabase
+    hostname: subDatabase
+    env_file:
+      - ./.env
+    networks:
+      - bigSystemNetwork
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    logging:
+      options:
+        max-file: "3"
+        max-size: "10MB"

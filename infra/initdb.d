@@ -2,11 +2,13 @@
 CREATE DATABASE IF NOT EXISTS `platform_comment`;
 CREATE DATABASE IF NOT EXISTS `platform_article`;
 CREATE DATABASE IF NOT EXISTS `platform_article_like`;
+CREATE DATABASE IF NOT EXISTS `platform_article_view`;
 
-# user add grant
+# user add grant -> if need to specific user create and match
 GRANT SELECT, INSERT, UPDATE, DELETE ON platform_comment.* TO 'big_system'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON platform_article.* TO 'big_system'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON platform_article_like.* TO 'big_system'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON platform_article_view.* TO 'big_system'@'%';
 #GRANT ALL PRIVILEGES ON platform_article_like.* TO 'big_system'@'%';
 
 # 권한에 대한 적용
@@ -89,3 +91,9 @@ CREATE TABLE platform_article_like.tbl_article_like_count
     like_count BIGINT NOT NULL COMMENT "This is like number",
     version BIGINT NOT NULL COMMENT "optimistic lock version column"
 );
+
+# 조회 수에 대한 백업 테이블
+CREATE TABLE platform_article_view.tbl_article_view_count{
+    article_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is view count PK and Shard Key",
+    view_count BIGINT NOT NULL COMMENT "view count back up"
+};

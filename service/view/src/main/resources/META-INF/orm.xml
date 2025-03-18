@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+                            http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
+                 version="2.2">
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete/>
+    </persistence-unit-metadata>
+
+    <!--view count back-up -->
+    <entity class="kr.co.won.view.entity.ViewCountEntity" access="FIELD" name="ViewCountEntity">
+        <table name="tbl_article_view_count">
+        </table>
+        <!--database column-->
+        <attributes>
+            <id name="articleId">
+                <column name="article_id"/>
+            </id>
+            <basic name="viewCount">
+                <column name="view_count"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

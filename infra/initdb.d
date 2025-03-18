@@ -93,7 +93,7 @@ CREATE TABLE platform_article_like.tbl_article_like_count
 );
 
 # 조회 수에 대한 백업 테이블
-CREATE TABLE platform_article_view.tbl_article_view_count{
+CREATE TABLE platform_article_view.tbl_article_view_count(
     article_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is view count PK and Shard Key",
     view_count BIGINT NOT NULL COMMENT "view count back up"
-};
+);

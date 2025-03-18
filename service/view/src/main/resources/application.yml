@@ -1,2 +1,26 @@
 server:
-  port: 0
+  port: 9003
+  shutdown: graceful
+spring:
+  application:
+    name: board-view-service
+  config:
+    import: optional:file:.env[.properties] # env file
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${ARTICLE_VIEW_DB_URL}
+    username: ${ARTICLE_DB_USER}
+    password: ${ARTICLE_DB_PASSWORD}
+  jpa:
+    database: mysql
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    mapping-resources:
+      - META-INF/orm.xml
+  data:
+    redis:
+      host: ${VIEW_REDIS_URL}
+      password: ${VIEW_REDIS_PASSWORD}
+      port: 6379

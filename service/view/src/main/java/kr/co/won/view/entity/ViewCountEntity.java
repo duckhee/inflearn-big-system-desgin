@@ -12,11 +12,11 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
-@Table(name = "tbl_article_view_count")
+//@Entity
+//@Table(name = "tbl_article_view_count")
 public class ViewCountEntity {
 
-    @Id
+    //    @Id
     private Long articleId; // shard key
 
     private Long viewCount;

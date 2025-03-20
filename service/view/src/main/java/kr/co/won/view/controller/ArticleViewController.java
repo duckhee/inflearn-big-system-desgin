@@ -14,7 +14,7 @@ public class ArticleViewController {
 
     @PostMapping(path = "/articles/{articleId}/users/{userId}")
     public Long increaseViewCountResponse(@PathVariable(name = "articleId") Long articleId, @PathVariable(name = "userId") Long userId) {
-        return viewService.increaseViewCount(articleId);
+        return viewService.increaseViewCount(articleId, userId);
     }
 
     @GetMapping(path = "/articles/{articleId}")

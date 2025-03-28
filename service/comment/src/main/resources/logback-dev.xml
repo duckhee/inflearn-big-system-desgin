@@ -1,0 +1,37 @@
+<configuration>
+    <property name="LOG_FILE" value="application.log"/>
+    <!--console 출력-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[console]%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--file 출력-->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%d</pattern>
+        </encoder>
+    </appender>
+
+    <!--Logstash로 전송을 하는 LogAppender-->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>127.0.0.1:5044</destination>
+        <keepAlive>true</keepAlive>
+        <reconnectionDelay>5000</reconnectionDelay> <!-- 5초마다 재연결 시도 -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <!--Logger 설정-->
+    <root level="info">
+        <!-- 여기서 설정이 된 값을 가지고 출력을 해준다. 삭제 시 해당 기능은 사용이 안된다. -->
+        <appender-ref ref="CONSOLE"/>
+        <!--<appender-ref ref="FILE"/>-->
+        <appender-ref ref="LOGSTASH"/>
+    </root>
+</configuration>

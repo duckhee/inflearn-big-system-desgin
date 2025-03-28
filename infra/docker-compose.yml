@@ -42,3 +42,16 @@ services:
       options:
         max-file: "3"
         max-size: "10MB"
+  kafkaCluster: # https://hub.docker.com/r/apache/kafka, https://velog.io/@jthugg/make-local-kafka-cluster-kraft-mode-feat-debezium-cdc
+    image: apache/kafka:3.8.0
+    container_name: boardKafka
+    env_file:
+      - ./.env
+    networks:
+      - bigSystemNetwork
+    ports:
+      - "9092:9092"
+    logging:
+      options:
+        max-file: "3"
+        max-size: "10MB"

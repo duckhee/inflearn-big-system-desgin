@@ -37,6 +37,9 @@ allprojects {
 
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
+        //
+        implementation 'ch.qos.logback:logback-classic'
+
         //    elasticsearch에 log 저장을 하기 위한 logstash 및 log 설정
         implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 

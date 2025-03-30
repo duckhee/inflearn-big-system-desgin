@@ -1,0 +1,33 @@
+package kr.co.won.common.event.payload;
+
+import kr.co.won.common.event.EventPayload;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class CommentCreateEventPayload implements EventPayload {
+
+    private Long commentId;
+
+    private String content;
+
+    private Long path;
+
+    private Long articleId;
+
+    private Long writerId;
+
+    private Boolean deleted;
+
+    private LocalDateTime createdAt;
+
+    private Long articleCommentCount;
+
+}

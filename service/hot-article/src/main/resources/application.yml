@@ -1,2 +1,25 @@
 server:
-  port: 0
+  port: 9094
+  shutdown: graceful
+
+spring:
+  application:
+    name: board-hot-article-service
+  config:
+    import: optional:file:.env[.properties] # env file
+  data:
+    redis:
+      host: ${HOT_ARTICLE_REDIS_URL}
+      password: ${HOT_ARTICLE_REDIS_PASSWORD}
+      port: 6379
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER_URL}
+    consumer:
+      group-id: ${HOT_ARTICLE_KAFKA_CONSUMER_GROUP_ID}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer # key에 대한 시리얼 및 디시리얼 설정 기능 설정
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer # 값에 대한 시리얼 및 디시리얼 설정 기능 설정
+      enable-auto-commit: false # 자동적으로 커밋을 하는 기능 설정 끄기
+# 타 서비스에 대한 정보
+endpoints:
+  kuke-board-article-service:
+    url: ${ARTICLE_SERVICE_URL}

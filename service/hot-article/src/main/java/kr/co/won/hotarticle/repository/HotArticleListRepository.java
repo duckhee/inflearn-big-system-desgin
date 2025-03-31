@@ -64,6 +64,17 @@ public class HotArticleListRepository {
     }
 
     /**
+     * 인기글에 대해서 삭제를 하는 함수
+     *
+     * @param articleId
+     * @param keyDateTime
+     */
+    public void remove(Long articleId, LocalDateTime keyDateTime) {
+        redisTemplate.opsForZSet()
+                .remove(generateKey(keyDateTime), String.valueOf(articleId));
+    }
+
+    /**
      * 키에 들어가는 시간 문자열을 이용해서 키를 생성을 해주는 함수
      *
      * @param time

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentCreateEventPayload implements EventPayload {
+public class CommentCreatedEventPayload implements EventPayload {
 
     private Long commentId;
 

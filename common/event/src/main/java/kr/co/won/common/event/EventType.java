@@ -13,8 +13,8 @@ public enum EventType {
     ARTICLE_CREATE(ArticleCreateEventPayload.class, Topic.KUKE_BOARD_ARTICLE),
     ARTICLE_UPDATE(ArticleUpdateEventPayload.class, Topic.KUKE_BOARD_ARTICLE),
     ARTICLE_DELETE(ArticleDeletedEventPayload.class, Topic.KUKE_BOARD_ARTICLE),
-    COMMENT_CREATE(CommentCreateEventPayload.class, Topic.KUKE_BOARD_COMMENT),
-    COMMENT_DELETE(CommentCreateEventPayload.class, Topic.KUKE_BOARD_COMMENT),
+    COMMENT_CREATE(CommentCreatedEventPayload.class, Topic.KUKE_BOARD_COMMENT),
+    COMMENT_DELETE(CommentCreatedEventPayload.class, Topic.KUKE_BOARD_COMMENT),
     ARTICLE_LIKE(ArticleLikedEventPayload.class, Topic.KUKE_BOARD_LIKE),
     ARTICLE_UNLIKE(ArticleUnLikedEventPayload.class, Topic.KUKE_BOARD_LIKE),
     ARTICLE_VIEWED(ArticleViewedEventPayload.class, Topic.KUKE_BOARD_VIEW);

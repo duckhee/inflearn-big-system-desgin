@@ -37,6 +37,20 @@ CREATE TABLE platform_article.tbl_board_article_count(
 );
 
 
+# 분산 트랜잭션을 위한 테이블 -> Transactional Outbox
+CREATE TABLE platform_article.tbl_outbox(
+    outbox_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is outbox PK",
+    shard_key BIGINT NOT NULL COMMENT "service event shard key",
+    event_type VARCHAR(100) NOT NULL COMMENT "event type",
+    payload VARCHAR(5000) NOT NULL COMMENT "event payload",
+    created_at DATETIME NOT NULL COMMENT "event created time"
+);
+
+# 분산 트랜잭션에 대한 index -> 생성 10초 이후 조건 조회를 위한 인덱스
+CREATE INDEX idx_shard_key_created_at ON platform_article.tbl_outbox(shard_key ASC, created_at ASC);
+
+
+
 CREATE TABLE platform_comment.tbl_comment
 (
     comment_id        BIGINT        NOT NULL PRIMARY KEY COMMENT "This is comment ID",
@@ -72,6 +86,21 @@ CREATE TABLE platform_comment.tbl_article_comment_count(
 # 무한 댓글에서 사용을 할 인덱스
 CREATE UNIQUE INDEX  idx_article_id_path ON `platform_comment`.tbl_infinity_comments( article_id ASC, path ASC);
 
+
+# 분산 트랜잭션을 위한 테이블 -> Transactional Outbox
+CREATE TABLE platform_comment.tbl_outbox(
+    outbox_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is outbox PK",
+    shard_key BIGINT NOT NULL COMMENT "service event shard key",
+    event_type VARCHAR(100) NOT NULL COMMENT "event type",
+    payload VARCHAR(5000) NOT NULL COMMENT "event payload",
+    created_at DATETIME NOT NULL COMMENT "event created time"
+);
+
+# 분산 트랜잭션에 대한 index -> 생성 10초 이후 조건 조회를 위한 인덱스
+CREATE INDEX idx_shard_key_created_at ON platform_comment.tbl_outbox(shard_key ASC, created_at ASC);
+
+
+
 # 좋아요를 위한 테이블
 CREATE TABLE platform_article_like.tbl_article_like
 (
@@ -92,8 +121,36 @@ CREATE TABLE platform_article_like.tbl_article_like_count
     version BIGINT NOT NULL COMMENT "optimistic lock version column"
 );
 
+
+# 분산 트랜잭션을 위한 테이블 -> Transactional Outbox
+CREATE TABLE platform_article_like.tbl_outbox(
+    outbox_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is outbox PK",
+    shard_key BIGINT NOT NULL COMMENT "service event shard key",
+    event_type VARCHAR(100) NOT NULL COMMENT "event type",
+    payload VARCHAR(5000) NOT NULL COMMENT "event payload",
+    created_at DATETIME NOT NULL COMMENT "event created time"
+);
+
+# 분산 트랜잭션에 대한 index -> 생성 10초 이후 조건 조회를 위한 인덱스
+CREATE INDEX idx_shard_key_created_at ON platform_article_like.tbl_outbox(shard_key ASC, created_at ASC);
+
+
+
 # 조회 수에 대한 백업 테이블
 CREATE TABLE platform_article_view.tbl_article_view_count(
     article_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is view count PK and Shard Key",
     view_count BIGINT NOT NULL COMMENT "view count back up"
 );
+
+# 분산 트랜잭션을 위한 테이블 -> Transactional Outbox
+CREATE TABLE platform_article_view.tbl_outbox(
+    outbox_id BIGINT NOT NULL PRIMARY KEY COMMENT "This is outbox PK",
+    shard_key BIGINT NOT NULL COMMENT "service event shard key",
+    event_type VARCHAR(100) NOT NULL COMMENT "event type",
+    payload VARCHAR(5000) NOT NULL COMMENT "event payload",
+    created_at DATETIME NOT NULL COMMENT "event created time"
+);
+
+# 분산 트랜잭션에 대한 index -> 생성 10초 이후 조건 조회를 위한 인덱스
+CREATE INDEX idx_shard_key_created_at ON platform_article_view.tbl_outbox(shard_key ASC, created_at ASC);
+

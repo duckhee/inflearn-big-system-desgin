@@ -1,6 +1,6 @@
 rootProject.name = 'inflearn-big-system-design'
 
 include 'common'
-include "common:snowflake", "common:data-serializer", "common:event"
+include "common:snowflake", "common:data-serializer", "common:event", "common:outbox-message-relay"
 include 'service'
 include 'service:article', "service:article-read", "service:comment", "service:hot-article", "service:like", "service:view"

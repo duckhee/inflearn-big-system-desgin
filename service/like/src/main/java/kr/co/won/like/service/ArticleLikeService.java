@@ -1,6 +1,10 @@
 package kr.co.won.like.service;
 
 import jakarta.persistence.LockModeType;
+import kr.co.won.common.event.EventType;
+import kr.co.won.common.event.payload.ArticleLikedEventPayload;
+import kr.co.won.common.event.payload.ArticleUnLikedEventPayload;
+import kr.co.won.common.outboxmessagerelay.event.OutboxEventPublisher;
 import kr.co.won.common.snowflake.Snowflake;
 import kr.co.won.like.entity.ArticleLikeCountEntity;
 import kr.co.won.like.entity.ArticleLikeEntity;
@@ -24,6 +28,8 @@ public class ArticleLikeService {
     private final Snowflake snowflake = new Snowflake();
     private final ArticleLikeRepository likeRepository;
     private final ArticleLikeCountRepository likeCountRepository;
+    // kafka 전송을 위한 라이브러리 등록
+    private final OutboxEventPublisher outboxEventPublisher;
 
     /**
      * 해당 게시글에 해당 사용자가 좋아요를 했는지 찾는 기능
@@ -82,8 +88,21 @@ public class ArticleLikeService {
             ArticleLikeCountEntity newCount = ArticleLikeCountEntity.init(articleId, 1l);
             ArticleLikeCountEntity savedCount = likeCountRepository.save(newCount);
 //            log.info("[inner]saved article like user : {}, saved article like count : {}", likeArticle.toString(), savedCount);
+
         }
         log.info("saved article like user : {}, saved article like count : {}", likeArticle.toString(), likeCount);
+
+        // like event 발행
+        outboxEventPublisher.publish(EventType.ARTICLE_LIKE,
+                ArticleLikedEventPayload.builder()
+                        .articleLikeId(likeArticle.getArticleLikeId())
+                        .articleId(likeArticle.getArticleId())
+                        .userId(likeArticle.getUserId())
+                        .createdAt(likeArticle.getCreatedAt())
+                        .articleLikeCount(likeCount(likeArticle.getArticleId()))
+                        .build(),
+                likeArticle.getArticleId()
+                );
     }
 
     /**
@@ -98,7 +117,20 @@ public class ArticleLikeService {
                 .ifPresent(entity -> {
                     likeRepository.delete(entity);
                     likeCountRepository.decreaseLikeCount(articleId);
+
+                    // like event 발행
+                    outboxEventPublisher.publish(EventType.ARTICLE_UNLIKE,
+                            ArticleUnLikedEventPayload.builder()
+                                    .articleLikeId(entity.getArticleLikeId())
+                                    .articleId(entity.getArticleId())
+                                    .userId(entity.getUserId())
+                                    .createdAt(entity.getCreatedAt())
+                                    .articleLikeCount(likeCount(entity.getArticleId()))
+                                    .build(),
+                            entity.getArticleId()
+                    );
                 });
+
     }
 
     /**

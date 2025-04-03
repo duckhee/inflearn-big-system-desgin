@@ -9,6 +9,11 @@ import kr.co.won.article.service.request.ArticleUpdateRequest;
 import kr.co.won.article.service.response.ArticlePageResponse;
 import kr.co.won.article.service.response.ArticleResponse;
 import kr.co.won.article.service.utils.paging.PageLimitCalculator;
+import kr.co.won.common.event.EventType;
+import kr.co.won.common.event.payload.ArticleCreateEventPayload;
+import kr.co.won.common.event.payload.ArticleDeletedEventPayload;
+import kr.co.won.common.event.payload.ArticleUpdateEventPayload;
+import kr.co.won.common.outboxmessagerelay.event.OutboxEventPublisher;
 import kr.co.won.common.snowflake.Snowflake;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +28,9 @@ public class ArticleService {
     private final Snowflake snowflake = new Snowflake();
     private final ArticleRepository articleRepository;
     private final BoardArticleCountRepository articleCountRepository;
+    // Event 를 발행하기 위한 서비스
+    private final OutboxEventPublisher outboxEventPublisher;
+    private final BoardArticleCountRepository boardArticleCountRepository;
 
     @Transactional
     public ArticleResponse createArticle(ArticleCreateRequest request) {
@@ -41,7 +49,21 @@ public class ArticleService {
         if (articleCount == 0) {
             articleCountRepository.save(BoardArticleCountEntity.init(request.getBoardId(), 1l));
         }
-
+        // kafka로 이벤트 발행
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_CREATE,
+                ArticleCreateEventPayload.builder()
+                        .articleId(article.getArticleId())
+                        .title(article.getTitle())
+                        .content(article.getContent())
+                        .boardId(article.getBoardId())
+                        .writerId(article.getWriterId())
+                        .createdAt(article.getCreatedAt())
+                        .modifiedAt(article.getModifiedAt())
+                        .boardArticleCount(articleCountNumber(article.getBoardId()))
+                        .build(),
+                article.getBoardId()
+        );
         return ArticleResponse.fromEntity(article);
     }
 
@@ -53,6 +75,21 @@ public class ArticleService {
         ArticleEntity findArticle = articleRepository.findById(articleId)
                 .orElseThrow();
         findArticle.updateArticle(request.getTitle(), request.getContent());
+
+        // kafka로 이벤트 발행
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_UPDATE,
+                ArticleUpdateEventPayload.builder()
+                        .articleId(findArticle.getArticleId())
+                        .title(findArticle.getTitle())
+                        .content(findArticle.getContent())
+                        .boardId(findArticle.getBoardId())
+                        .writerId(findArticle.getWriterId())
+                        .createdAt(findArticle.getCreatedAt())
+                        .modifiedAt(findArticle.getModifiedAt())
+                        .build(),
+                findArticle.getBoardId()
+        );
 
         return ArticleResponse.fromEntity(findArticle);
     }
@@ -99,6 +136,22 @@ public class ArticleService {
         articleRepository.deleteById(articleId);
         /** 게시글 수 감소 */
         articleCountRepository.decreaseArticleCount(findArticle.getBoardId());
+
+        // kafka로 이벤트 발행
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_DELETE,
+                ArticleDeletedEventPayload.builder()
+                        .articleId(findArticle.getArticleId())
+                        .title(findArticle.getTitle())
+                        .content(findArticle.getContent())
+                        .boardId(findArticle.getBoardId())
+                        .writerId(findArticle.getWriterId())
+                        .createdAt(findArticle.getCreatedAt())
+                        .modifiedAt(findArticle.getModifiedAt())
+                        .boardArticleCount(articleCountNumber(findArticle.getBoardId()))
+                        .build(),
+                findArticle.getBoardId()
+        );
     }
 
     /**
@@ -112,4 +165,6 @@ public class ArticleService {
                 .map(BoardArticleCountEntity::getArticleCount)
                 .orElse(0l);
     }
+
+
 }

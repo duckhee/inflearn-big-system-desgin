@@ -4,6 +4,9 @@ dependencies {
 //    implementation 'mysql:mysql-connector-java'
 //    implementation 'com.h2database:h2'
     implementation project(':common:snowflake')
+    implementation project(':common:outbox-message-relay')
+    implementation project(":common:event")
+
     runtimeOnly 'com.mysql:mysql-connector-j'
     runtimeOnly 'com.h2database:h2'
 }

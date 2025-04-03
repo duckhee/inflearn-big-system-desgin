@@ -1,5 +1,6 @@
 package kr.co.won.common.outboxmessagerelay.configuration;
 
+import kr.co.won.common.outboxmessagerelay.MessageRelay;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,9 +9,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.SimpleAsyncTaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +23,7 @@ import java.util.concurrent.Executors;
 
 @EnableAsync // 비동기 처리를 위한 annotation
 @Configuration
-@ComponentScan("kr.co.won.common.outboxmessagerelay")
+@ComponentScan(basePackageClasses = {MessageRelay.class})
 @EnableScheduling
 public class MessageRelayConfiguration {
 
@@ -63,10 +67,10 @@ public class MessageRelayConfiguration {
      *
      * @return
      */
-    @Bean
+    @Bean(name = "messageRelayPublishPendingEventExecutor")
     public Executor messageRelayPublishPendingEventExecutor() {
-        // 각 어플리케이션 서버마다 Shard가 조금씩 분활되어서 할당되어서 처리를 할 것이기 때문에 미전송이 된 이벤트 처리를 하나의 쓰레드로만 전송을 해준다.
-        return Executors.newSingleThreadExecutor();
+//         각 어플리케이션 서버마다 Shard가 조금씩 분활되어서 할당되어서 처리를 할 것이기 때문에 미전송이 된 이벤트 처리를 하나의 쓰레드로만 전송을 해준다.
+        return Executors.newSingleThreadScheduledExecutor();
     }
 
 

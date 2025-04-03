@@ -24,3 +24,5 @@ spring:
       host: ${VIEW_REDIS_URL}
       password: ${VIEW_REDIS_PASSWORD}
       port: 6379
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER_URL}

@@ -9,6 +9,10 @@ import kr.co.won.comment.service.request.InfinityCommentCreateRequest;
 import kr.co.won.comment.service.response.CommentPageResponse;
 import kr.co.won.comment.service.response.CommentResponse;
 import kr.co.won.comment.service.utils.paging.PageLimitCalculator;
+import kr.co.won.common.event.EventType;
+import kr.co.won.common.event.payload.CommentCreatedEventPayload;
+import kr.co.won.common.event.payload.CommentDeletedEventPayload;
+import kr.co.won.common.outboxmessagerelay.event.OutboxEventPublisher;
 import kr.co.won.common.snowflake.Snowflake;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,8 @@ public class InfinityCommentService {
     private final ArticleCommentCountRepository commentCountRepository;
 
     private final Snowflake snowflake = new Snowflake();
+    // kafka event 전송을 하기 위한 추가
+    private final OutboxEventPublisher outboxEventPublisher;
 
 
     public CommentResponse createComment(InfinityCommentCreateRequest request) {
@@ -37,6 +43,21 @@ public class InfinityCommentService {
         if (commentCount == 0) {
             commentCountRepository.save(ArticleCommentCountEntity.init(request.getArticleId(), 1l));
         }
+
+        // kafka event 발행
+        outboxEventPublisher.publish(
+                EventType.COMMENT_CREATE,
+                CommentCreatedEventPayload.builder()
+                        .commentId(savedNewComment.getCommentId())
+                        .content(savedNewComment.getContent())
+                        .articleId(savedNewComment.getArticleId())
+                        .writerId(savedNewComment.getWriterId())
+                        .deleted(savedNewComment.getDeleted())
+                        .createdAt(savedNewComment.getCreatedAt())
+                        .articleCommentCount(commentCount(savedNewComment.getArticleId()))
+                        .build(),
+                savedNewComment.getArticleId()
+        );
         return CommentResponse.from(savedNewComment);
     }
 
@@ -75,6 +96,21 @@ public class InfinityCommentService {
                     .filter(Predicate.not(this::hasSubComment))
                     .ifPresent(this::deleteInDatabase);
         }
+
+        // kafka event 발행
+        outboxEventPublisher.publish(
+                EventType.COMMENT_DELETE,
+                CommentDeletedEventPayload.builder()
+                        .commentId(comment.getCommentId())
+                        .content(comment.getContent())
+                        .articleId(comment.getArticleId())
+                        .writerId(comment.getWriterId())
+                        .deleted(comment.getDeleted())
+                        .createdAt(comment.getCreatedAt())
+                        .articleCommentCount(commentCount(comment.getArticleId()))
+                        .build(),
+                comment.getArticleId()
+        );
     }
 
     private boolean hasSubComment(InfinityCommentEntity comment) {

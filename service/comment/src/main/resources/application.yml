@@ -23,3 +23,10 @@ spring:
     database: mysql
     mapping-resources:
       - META-INF/orm.xml
+  data:
+    redis:
+      host: ${HOT_ARTICLE_REDIS_URL}
+      port: 6379
+      password: ${HOT_ARTICLE_REDIS_PASSWORD}
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER_URL}

@@ -8,7 +8,7 @@
 
     <persistence-unit-metadata>
         <!-- 이 설정을 추가하면 XML이 어노테이션보다 우선됨 -->
-        <xml-mapping-metadata-complete/>
+        <!--<xml-mapping-metadata-complete/>-->
     </persistence-unit-metadata>
     <!-- tbl_article -->
     <entity class="kr.co.won.article.entity.ArticleEntity" name="ArticleEntity" access="FIELD">

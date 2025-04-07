@@ -34,7 +34,9 @@ public class HotArticleConsumer {
 
         log.info("[HotArticleConsumer.consumerEventHandler] received msg = {}", message);
         Event<EventPayload> event = Event.fromJson(message);
+        log.info("[HotArticleConsumer.consumerEventHandler]event = {}", event.getType().name());
         if (event != null) {
+            log.info("[HotArticleConsumer.consumerEventHandler] handleEvent");
             hotArticleService.handleEvent(event);
         }
         // kafka에 해당 구독에 대해서 처리가 끝났다고 알려주는 함수 호출

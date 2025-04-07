@@ -36,6 +36,7 @@ public class HotArticleListRepository {
      * @param ttl
      */
     public void add(Long articleId, LocalDateTime time, Long score, Long limit, Duration ttl) {
+
         // pipeline을 만들어서 제어를 하기 위한 executePipelined를 이용을 한다.
         redisTemplate.executePipelined((RedisCallback<?>) action -> {
             StringRedisConnection connection = (StringRedisConnection) action;
@@ -57,7 +58,6 @@ public class HotArticleListRepository {
         return redisTemplate.opsForZSet()
                 .reverseRangeWithScores(generateKey(key), 0, -1)  // 해당 키에 해당이 되는 정보를 가져오기 위한 설정 -> 범위를 가지고 값을 가져온다.
                 .stream()
-                .peek(tuple -> log.info("[HotArticleListRepository.readAll] articleId={}, score={}", tuple.getValue(), tuple.getScore()))
                 .map(ZSetOperations.TypedTuple::getValue)
                 .map(Long::valueOf)
                 .toList();

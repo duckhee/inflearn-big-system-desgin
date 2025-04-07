@@ -16,6 +16,7 @@ import kr.co.won.common.outboxmessagerelay.event.OutboxEventPublisher;
 import kr.co.won.common.snowflake.Snowflake;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -31,7 +32,7 @@ public class InfinityCommentService {
     // kafka event 전송을 하기 위한 추가
     private final OutboxEventPublisher outboxEventPublisher;
 
-
+    @Transactional
     public CommentResponse createComment(InfinityCommentCreateRequest request) {
         InfinityCommentEntity parent = findParentComment(request);
         CommentPath parentPath = (parent == null) ? CommentPath.create("") : parent.getCommentPath();
@@ -66,6 +67,7 @@ public class InfinityCommentService {
         return CommentResponse.from(findComment);
     }
 
+    @Transactional
     public void deleteComment(Long commentId) {
         commentRepository.findById(commentId)
                 .filter(Predicate.not(InfinityCommentEntity::getDeleted))

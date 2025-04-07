@@ -25,8 +25,6 @@ public class HotArticleService {
     // 이벤트에 대한 Handler 구현체들을 전부 주입을 받기 위해서 List 선언
     private final List<EventHandler> eventHandlers;
 
-    private final HotArticleScoreUpdater articleScoreUpdater;
-
     private final HotArticleListRepository hotArticleListRepository;
     private final HotArticleScoreUpdater hotArticleScoreUpdater;
 
@@ -36,14 +34,18 @@ public class HotArticleService {
      * @param event
      */
     public void handleEvent(Event<EventPayload> event) {
+        log.info("[HotArticleService.handleEvent] event={}", event.getType().name());
         EventHandler<EventPayload> eventHandler = findEventHandler(event);
         if (eventHandler == null) {
+            log.info("[HotArticleService.handleEvent] not match event handler ={}", event.getType().name());
             return;
         }
         // 해당 이벤트가 생성 및 수정 이벤트인지 확인
         if (isArticleCreateOrUpdate(event)) {
+            log.info("[HotArticleService.handleEvent] createOrUpdate = {}", event.getType().name());
             eventHandler.handle(event);
         } else {
+            log.info("[HotArticleService.handleEvent] event = {}", event.getType().name());
             hotArticleScoreUpdater.update(event, eventHandler);
         }
     }
@@ -56,12 +58,15 @@ public class HotArticleService {
      * @return
      */
     public List<HotArticleResponse> readAll(String dateStr) {
-        return hotArticleListRepository.readAll(dateStr)
+        log.info("dateStr = {}", dateStr);
+        List<HotArticleResponse> response = hotArticleListRepository.readAll(dateStr)
                 .stream()
                 .map(articleClient::read)
                 .filter(Objects::nonNull)
                 .map(HotArticleResponse::from)
                 .toList();
+        log.info("response = {}", response);
+        return response;
     }
 
 

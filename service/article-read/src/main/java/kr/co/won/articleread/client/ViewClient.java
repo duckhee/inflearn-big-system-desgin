@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -22,7 +23,10 @@ public class ViewClient {
         restClient = RestClient.create(viewServiceUrl);
     }
 
+
+    @Cacheable(key = "#articleId", value = "articleViewCount")// spring 에서 제공을 하는 cache를 이용을 하기 위한 annotation
     public Long articleViewCount(Long articleId) {
+        log.info("[ViewClient.articleViewCount] articleId={}", articleId);
         try {
             return restClient.get()
                     .uri("/api/article-views/articles/{articleId}", articleId)

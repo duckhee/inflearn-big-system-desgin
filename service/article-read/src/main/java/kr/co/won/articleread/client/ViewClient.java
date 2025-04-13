@@ -1,6 +1,7 @@
 package kr.co.won.articleread.client;
 
 import jakarta.annotation.PostConstruct;
+import kr.co.won.articleread.cache.OptimizedCacheable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +25,8 @@ public class ViewClient {
     }
 
 
-    @Cacheable(key = "#articleId", value = "articleViewCount")// spring 에서 제공을 하는 cache를 이용을 하기 위한 annotation
+    //    @Cacheable(key = "#articleId", value = "articleViewCount")// spring 에서 제공을 하는 cache를 이용을 하기 위한 annotation
+    @OptimizedCacheable(type = "articleViewCount", ttlSeconds = 1) // 최적화된 사용자 정의 캐시에 대한 적용을 하기 위한 annotation
     public Long articleViewCount(Long articleId) {
         log.info("[ViewClient.articleViewCount] articleId={}", articleId);
         try {

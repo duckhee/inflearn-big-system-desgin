@@ -3,6 +3,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.kafka:spring-kafka'
 
+    implementation 'org.springframework.boot:spring-boot-starter-aop' // optimizedCache 를 Annotation으로 처리를 하기 위한 AOP 추가
+
     implementation project(':common:event')
     implementation project(':common:data-serializer') // Article Query Model에 대해서 저장을 할 때 사용할 직렬화 모듈
 

@@ -1,0 +1,44 @@
+server:
+  port: 9000
+  shutdown: graceful
+
+spring:
+  config:
+    import: optional:file:.env[.properties] # env file
+  #    import: optional:application-db.yml # h2 database
+  application:
+    name: board-article-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${ARTICLE_DB_URL}
+    username: ${ARTICLE_DB_USER}
+    password: ${ARTICLE_DB_PASSWORD}
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    database: mysql
+    mapping-resources:
+      - META-INF/orm.xml
+  data:
+    redis:
+      host: ${HOT_ARTICLE_REDIS_URL}
+      port: 6379
+      password: ${HOT_ARTICLE_REDIS_PASSWORD}
+    # ===== [HATEOAS 추가] Pageable 파라미터 해석 규칙 =====
+    # => v2(HATEOAS) 컨트롤러의 Pageable 파라미터에만 적용된다.
+    #    v1 컨트롤러는 @RequestParam Long page 를 사용하므로 영향이 없다.
+    web:
+      pageable:
+        # ?page=1 을 첫 페이지로 해석 (기존 v1 API 와 동일한 1-based)
+        # => Pageable 해석 / 생성되는 링크의 page= / page.number 메타데이터가 모두 1-based 로 맞춰진다.
+        one-indexed-parameters: true
+        page-parameter: page   # 쿼리 파라미터 이름 (기존 API 와 동일)
+        size-parameter: size   # 쿼리 파라미터 이름 (기존 API 와 동일)
+        default-page-size: 10  # size 미지정 시 기본값 (Spring 기본값 20)
+        max-page-size: 50      # size 상한, 초과 요청은 50 으로 강제 (Spring 기본값 2000)
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER_URL}

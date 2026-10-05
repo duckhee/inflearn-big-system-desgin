@@ -1,0 +1,19 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    /**
+     * [HATEOAS 추가]
+     * - spring-hateoas : RepresentationModel / EntityModel / CollectionModel / PagedModel / WebMvcLinkBuilder 제공
+     * - HypermediaAutoConfiguration : HAL(application/hal+json) 직렬화 자동 설정
+     * - spring-data-commons(data-jpa 에 포함) 와 함께 있으면
+     *   HateoasAwareSpringDataWebConfiguration 이 PagedResourcesAssembler Bean 을 자동 등록한다.
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+    implementation project(':common:snowflake')
+    implementation project(':common:outbox-message-relay')
+    implementation project(':common:event')
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.h2database:h2'
+}
